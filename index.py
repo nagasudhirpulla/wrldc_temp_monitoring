@@ -85,23 +85,27 @@ for row in dataRows:
         if len(violationTypes) > 0:
             # create the message to be sent
             if 'Temperature' in violationTypes:
-                messageBody += 'Name={0}, Temperature = {1}, thresholds = {2}, {3}<br/>'.format(
+                messageBody += 'Name = {0}, Temperature = {1}, thresholds = {2}, {3}<br/>'.format(
                     devName, devTemp, tempLow, tempHigh)
             if 'Humidity' in violationTypes:
-                messageBody += 'Name={0}, Humidity = {1}, thresholds = {2}, {3}<br/>'.format(
+                messageBody += 'Name = {0}, Humidity = {1}, thresholds = {2}, {3}<br/>'.format(
                     devName, devHum, humLow, humHigh)
 if not(messageBody == ""):
-    messageBody = "Violations at {0}<br/>{1}".format(currTimeStr, messageBody)
     # send SMS to persons
-    try:
-        for prsn in persons:
-            isSuccess = sendSmsToPerson(
-                smsUsername, smsPass, prsn, messageBody)
-    except Exception as e:
-        print('Error in sending violation messages via SMS')
-        print(e)
+    for violLog in messageBody.split('<br/>'):
+        if violLog.strip() == "":
+            continue
+        smsBody = "Violations at {0}<br/>{1}<br/>-WRLDC".format(currTimeStr, violLog)
+        try:
+            for prsn in persons:
+                isSuccess = sendSmsToPerson(
+                    smsUsername, smsPass, prsn, smsBody)
+        except Exception as e:
+            print('Error in sending violation messages via SMS')
+            print(e)
 
     # send email to persons
+    messageBody = "Violations at {0}<br/>{1}".format(currTimeStr, messageBody)
     try:
         sendEmailToPersons(
             emailUsername, emailPass, emailAddress, emailHost, persons, messageSubject, messageBody)
