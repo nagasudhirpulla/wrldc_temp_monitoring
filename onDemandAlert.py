@@ -63,7 +63,7 @@ for row in dataRows:
             devName, devTemp, devHum)
 
 if not(messageBody == ""):
-    messageBody = "Time={0}<br/>{1}<br/>-WRLDC".format(currTimeStr, messageBody)
+    messageBody = "Time={0}<br/>{1}-WRLDC".format(currTimeStr, messageBody)
     try:
         for prsn in persons:
             isSuccess = sendSmsToPerson(
